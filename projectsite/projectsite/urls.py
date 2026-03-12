@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from Hangarin.views import dashboard, task_list, task_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', dashboard, name='dashboard'),
+    path('tasks/', task_list, name='task_list'),
+    path('tasks/<int:task_id>/', task_detail, name='task_detail'),
 ]

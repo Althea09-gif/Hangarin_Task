@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Dashboard</h1>
+<p class="page-subtitle">Manage your goals, tasks, and daily priorities in one place.</p>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Total Tasks</h3>
+        <p>{{ task_count }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Categories</h3>
+        <p>{{ category_count }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Priorities</h3>
+        <p>{{ priority_count }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>Notes</h3>
+        <p>{{ note_count }}</p>
+    </div>
+    <div class="stat-card">
+        <h3>SubTasks</h3>
+        <p>{{ subtask_count }}</p>
+    </div>
+</div>
+
+<h2 class="section-title">Recent Tasks</h2>
+
+<div class="task-grid">
+    {% for task in tasks %}
+        <div class="task-card">
+            <h3>{{ task.title }}</h3>
+            <p class="task-meta"><strong>Status:</strong> {{ task.status }}</p>
+            <p class="task-meta"><strong>Deadline:</strong> {{ task.deadline }}</p>
+            <p class="task-meta"><strong>Category:</strong> {{ task.category }}</p>
+            <p class="task-meta"><strong>Priority:</strong> {{ task.priority }}</p>
+            <p class="task-description">{{ task.description }}</p>
+            <a href="{% url 'task_detail' task.id %}" class="button-link">View Details</a>
+        </div>
+    {% empty %}
+        <div class="empty-message">No tasks available yet.</div>
+    {% endfor %}
+</div>
+{% endblock %}
