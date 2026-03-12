@@ -3,41 +3,57 @@
 {% block title %}Task Detail{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Task Detail</h1>
-<p class="page-subtitle">Detailed view of a selected task.</p>
+<div class="form-page">
+    <div class="form-shell">
+        <div class="page-top-link">
+            <a href="{% url 'dashboard' %}" class="back-link">← Back to Dashboard</a>
+        </div>
 
-<div class="detail-box">
-    <h2>{{ task.title }}</h2>
-    <p class="task-meta"><strong>Description:</strong> {{ task.description }}</p>
-    <p class="task-meta"><strong>Status:</strong> {{ task.status }}</p>
-    <p class="task-meta"><strong>Deadline:</strong> {{ task.deadline }}</p>
-    <p class="task-meta"><strong>Category:</strong> {{ task.category }}</p>
-    <p class="task-meta"><strong>Priority:</strong> {{ task.priority }}</p>
-</div>
+        <div class="detail-card">
+            <h1>{{ task.title }}</h1>
 
-<div class="list-box">
-    <h3>SubTasks</h3>
-    {% if subtasks %}
-        <ul>
-            {% for subtask in subtasks %}
-                <li><strong>{{ subtask.title }}</strong> — {{ subtask.status }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No subtasks available.</p>
-    {% endif %}
-</div>
+            <div class="detail-meta">
+                <span class="badge neutral">{{ task.status }}</span>
+                <span class="badge category-badge">{{ task.category }}</span>
+                <span class="badge priority-badge priority-{{ task.priority.name|lower }}">{{ task.priority }}</span>
+            </div>
 
-<div class="list-box">
-    <h3>Notes</h3>
-    {% if notes %}
-        <ul>
-            {% for note in notes %}
-                <li>{{ note.content }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No notes available.</p>
-    {% endif %}
+            <p><strong>Deadline:</strong> {{ task.deadline|date:"F d, Y - h:i A" }}</p>
+            <p><strong>Description:</strong> {{ task.description }}</p>
+
+            <div class="form-actions">
+                <a href="{% url 'edit_task' task.id %}" class="primary-btn">Edit Task</a>
+                <a href="{% url 'delete_task' task.id %}" class="danger-btn-link">Delete Task</a>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+            <div class="detail-card">
+                <h2>SubTasks ({{ completed_subtasks }}/{{ total_subtasks_task }})</h2>
+
+                {% for subtask in subtasks %}
+                    <div class="subtask-row">
+                        <span>{{ subtask.title }}</span>
+                        <span class="subtask-status">{{ subtask.status }}</span>
+                    </div>
+                {% empty %}
+                    <p>No subtasks available.</p>
+                {% endfor %}
+            </div>
+
+            <div class="detail-card">
+                <h2>Notes</h2>
+
+                {% for note in notes %}
+                    <div class="note-box">
+                        <p>{{ note.content }}</p>
+                        <small>{{ note.created_at|date:"F d, Y - h:i A" }}</small>
+                    </div>
+                {% empty %}
+                    <p>No notes available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

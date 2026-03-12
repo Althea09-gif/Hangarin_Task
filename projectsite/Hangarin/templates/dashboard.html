@@ -3,47 +3,114 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Dashboard</h1>
-<p class="page-subtitle">Manage your goals, tasks, and daily priorities in one place.</p>
-
-<div class="stats-grid">
-    <div class="stat-card">
-        <h3>Total Tasks</h3>
-        <p>{{ task_count }}</p>
-    </div>
-    <div class="stat-card">
-        <h3>Categories</h3>
-        <p>{{ category_count }}</p>
-    </div>
-    <div class="stat-card">
-        <h3>Priorities</h3>
-        <p>{{ priority_count }}</p>
-    </div>
-    <div class="stat-card">
-        <h3>Notes</h3>
-        <p>{{ note_count }}</p>
-    </div>
-    <div class="stat-card">
-        <h3>SubTasks</h3>
-        <p>{{ subtask_count }}</p>
-    </div>
-</div>
-
-<h2 class="section-title">Recent Tasks</h2>
-
-<div class="task-grid">
-    {% for task in tasks %}
-        <div class="task-card">
-            <h3>{{ task.title }}</h3>
-            <p class="task-meta"><strong>Status:</strong> {{ task.status }}</p>
-            <p class="task-meta"><strong>Deadline:</strong> {{ task.deadline }}</p>
-            <p class="task-meta"><strong>Category:</strong> {{ task.category }}</p>
-            <p class="task-meta"><strong>Priority:</strong> {{ task.priority }}</p>
-            <p class="task-description">{{ task.description }}</p>
-            <a href="{% url 'task_detail' task.id %}" class="button-link">View Details</a>
+<div class="app-shell">
+    <header class="topbar">
+        <div class="brand-wrap">
+            <div class="brand-icon">✔</div>
+            <div>
+                <h1 class="brand-title">Hangarin</h1>
+            </div>
+            <span class="brand-subtitle">Task &amp; To-Do Manager</span>
         </div>
-    {% empty %}
-        <div class="empty-message">No tasks available yet.</div>
-    {% endfor %}
+
+        <div class="topbar-actions">
+            <input type="text" class="search-box" placeholder="Search tasks...">
+            <button class="ghost-btn" type="button">Filter</button>
+            <button class="ghost-btn" type="button">Sort</button>
+            <a href="{% url 'create_task' %}" class="primary-btn">+ New Task</a>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="panel">
+                <h2 class="panel-title">Priorities</h2>
+                {% for item in priority_data %}
+                    <div class="priority-row priority-{{ item.name|lower }}">
+                        <span>{{ item.name }}</span>
+                        <span>{{ item.count }}</span>
+                    </div>
+                {% empty %}
+                    <p>No priorities found.</p>
+                {% endfor %}
+            </div>
+
+            <div class="panel">
+                <h2 class="panel-title">Categories</h2>
+                {% for item in category_data %}
+                    <div class="category-row">
+                        <span>{{ item.name }}</span>
+                        <span>{{ item.count }}</span>
+                    </div>
+                {% empty %}
+                    <p>No categories found.</p>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="main-header">
+                <h2>My Tasks</h2>
+                <div class="status-summary">
+                    <span class="status-pill pending">{{ pending_count }} Pending</span>
+                    <span class="status-pill progress">{{ in_progress_count }} In Progress</span>
+                    <span class="status-pill completed">{{ completed_count }} Completed</span>
+                </div>
+            </div>
+
+            <div class="totals-row">
+                <div class="mini-total-card">
+                    <h4>Total Tasks</h4>
+                    <p>{{ total_tasks }}</p>
+                </div>
+
+                <div class="mini-total-card">
+                    <h4>Total Notes</h4>
+                    <p>{{ total_notes }}</p>
+                </div>
+
+                <div class="mini-total-card">
+                    <h4>Total Subtasks</h4>
+                    <p>{{ total_subtasks }}</p>
+                </div>
+            </div>
+
+            <div class="task-grid">
+                {% for task in tasks %}
+                    <div class="task-card">
+                        <div class="task-card-top">
+                            <h3>{{ task.title }}</h3>
+                            <span class="dot-menu">•••</span>
+                        </div>
+
+                        <div class="task-meta-line">
+                            <span class="badge neutral">{{ task.status }}</span>
+                            <span>Due: {{ task.deadline|date:"F d, Y" }}</span>
+                        </div>
+
+                        <div class="task-tags">
+                            <span class="badge category-badge">{{ task.category }}</span>
+                            <span class="badge priority-badge priority-{{ task.priority.name|lower }}">
+                                {{ task.priority }}
+                            </span>
+                        </div>
+
+                        <p class="task-desc">{{ task.description|truncatechars:110 }}</p>
+
+                        <div class="card-actions">
+                            <a href="{% url 'task_detail' task.id %}" class="detail-link">View Details</a>
+
+                            <div class="right-actions">
+                                <a href="{% url 'edit_task' task.id %}" class="edit-link">Edit</a>
+                                <a href="{% url 'delete_task' task.id %}" class="delete-link">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="empty-card">No tasks yet.</div>
+                {% endfor %}
+            </div>
+        </main>
+    </div>
 </div>
 {% endblock %}

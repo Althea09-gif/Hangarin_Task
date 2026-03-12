@@ -8,19 +8,6 @@
     <link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="{% url 'dashboard' %}" class="brand">Hangarin</a>
-            <div class="nav-links">
-                <a href="{% url 'dashboard' %}">Dashboard</a>
-                <a href="{% url 'task_list' %}">Tasks</a>
-                <a href="/admin/">Admin</a>
-            </div>
-        </div>
-    </nav>
-
-    <main class="container">
-        {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
 </body>
 </html>

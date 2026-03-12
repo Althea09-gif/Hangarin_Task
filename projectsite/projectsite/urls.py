@@ -14,13 +14,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
-from Hangarin.views import dashboard, task_list, task_detail
+from Hangarin.views import dashboard, task_detail, create_task, edit_task, delete_task
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', dashboard, name='dashboard'),
-    path('tasks/', task_list, name='task_list'),
-    path('tasks/<int:task_id>/', task_detail, name='task_detail'),
+    path("admin/", admin.site.urls),
+    path("", dashboard, name="dashboard"),
+    path("tasks/new/", create_task, name="create_task"),
+    path("tasks/<int:task_id>/", task_detail, name="task_detail"),
+    path("tasks/<int:task_id>/edit/", edit_task, name="edit_task"),
+    path("tasks/<int:task_id>/delete/", delete_task, name="delete_task"),
 ]

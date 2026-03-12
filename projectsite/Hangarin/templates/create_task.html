@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Create Task{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-shell">
+        <div class="form-header-card">
+            <div>
+                <h1 class="form-page-title">{{ page_title }}</h1>
+                <p class="form-page-subtitle">Add a task, subtasks, and notes before saving.</p>
+            </div>
+            <a href="{% url 'dashboard' %}" class="cancel-btn">Cancel</a>
+        </div>
+
+        <form method="POST" class="modern-form">
+            {% csrf_token %}
+
+            <div class="form-section-card">
+                <div class="form-grid-modern">
+                    <div class="field-group">
+                        <label for="{{ form.title.id_for_label }}">Title</label>
+                        {{ form.title }}
+                    </div>
+
+                    <div class="field-group">
+                        <label for="{{ form.deadline.id_for_label }}">Deadline</label>
+                        {{ form.deadline }}
+                    </div>
+
+                    <div class="field-group field-full">
+                        <label for="{{ form.description.id_for_label }}">Description</label>
+                        {{ form.description }}
+                    </div>
+
+                    <div class="field-group">
+                        <label for="{{ form.status.id_for_label }}">Status</label>
+                        {{ form.status }}
+                    </div>
+
+                    <div class="field-group">
+                        <label for="{{ form.category.id_for_label }}">Category</label>
+                        {{ form.category }}
+                    </div>
+
+                    <div class="field-group">
+                        <label for="{{ form.priority.id_for_label }}">Priority</label>
+                        {{ form.priority }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <div class="detail-card nested-card">
+                    <div class="section-header">
+                        <h2>Subtasks</h2>
+                        <button type="button" class="ghost-btn" onclick="addSubtask()">+ Add Subtask</button>
+                    </div>
+
+                    <div id="subtasks-container" class="dynamic-stack">
+                        <div class="dynamic-row modern-dynamic-row">
+                            <input type="text" name="subtask_title[]" class="form-input" placeholder="Subtask title">
+                            <select name="subtask_status[]" class="form-input">
+                                {% for status in status_choices %}
+                                    <option value="{{ status }}">{{ status }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="danger-btn" onclick="removeRow(this)">Remove</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-card nested-card">
+                    <div class="section-header">
+                        <h2>Notes</h2>
+                        <button type="button" class="ghost-btn" onclick="addNote()">+ Add Note</button>
+                    </div>
+
+                    <div id="notes-container" class="dynamic-stack">
+                        <div class="dynamic-row modern-note-row">
+                            <textarea name="note_content[]" class="form-input form-textarea small-textarea" placeholder="Write a note"></textarea>
+                            <button type="button" class="danger-btn" onclick="removeRow(this)">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions modern-actions">
+                <button type="submit" class="primary-btn">{{ submit_label }}</button>
+                <a href="{% url 'dashboard' %}" class="cancel-btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function addSubtask() {
+    const container = document.getElementById("subtasks-container");
+    const row = document.createElement("div");
+    row.className = "dynamic-row modern-dynamic-row";
+    row.innerHTML = `
+        <input type="text" name="subtask_title[]" class="form-input" placeholder="Subtask title">
+        <select name="subtask_status[]" class="form-input">
+            <option value="Pending">Pending</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+        </select>
+        <button type="button" class="danger-btn" onclick="removeRow(this)">Remove</button>
+    `;
+    container.appendChild(row);
+}
+
+function addNote() {
+    const container = document.getElementById("notes-container");
+    const row = document.createElement("div");
+    row.className = "dynamic-row modern-note-row";
+    row.innerHTML = `
+        <textarea name="note_content[]" class="form-input form-textarea small-textarea" placeholder="Write a note"></textarea>
+        <button type="button" class="danger-btn" onclick="removeRow(this)">Remove</button>
+    `;
+    container.appendChild(row);
+}
+
+function removeRow(button) {
+    button.parentElement.remove();
+}
+</script>
+{% endblock %}
