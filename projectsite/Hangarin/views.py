@@ -1,10 +1,36 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 from .models import Task, Category, Priority, Note, SubTask
 from .forms import TaskForm
 
 
 def dashboard(request):
-    tasks = Task.objects.all().order_by("-created_at")
+    tasks = Task.objects.all()
+
+    search_query = request.GET.get("q", "").strip()
+    status_filter = request.GET.get("status", "").strip()
+    sort_value = request.GET.get("sort", "").strip()
+
+    if search_query:
+        tasks = tasks.filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+
+    if status_filter:
+        tasks = tasks.filter(status=status_filter)
+
+    if sort_value == "newest":
+        tasks = tasks.order_by("-created_at")
+    elif sort_value == "oldest":
+        tasks = tasks.order_by("created_at")
+    elif sort_value == "due_asc":
+        tasks = tasks.order_by("deadline")
+    elif sort_value == "due_desc":
+        tasks = tasks.order_by("-deadline")
+    else:
+        tasks = tasks.order_by("-created_at")
+
     priorities = Priority.objects.all()
     categories = Category.objects.all()
 

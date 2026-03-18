@@ -5,20 +5,115 @@
 {% block content %}
 <div class="app-shell">
     <header class="topbar">
-        <div class="brand-wrap">
-            <div class="brand-icon">✔</div>
-            <div>
-                <h1 class="brand-title">Hangarin</h1>
+        <div class="topbar-left">
+            <div class="brand-wrap">
+                <div class="brand-icon">✔</div>
+                <div class="brand-text">
+                    <h1 class="brand-title">Hangarin</h1>
+                    <span class="brand-subtitle">Task &amp; To-Do Manager</span>
+                </div>
             </div>
-            <span class="brand-subtitle">Task &amp; To-Do Manager</span>
         </div>
 
-        <div class="topbar-actions">
-            <input type="text" class="search-box" placeholder="Search tasks...">
-            <button class="ghost-btn" type="button">Filter</button>
-            <button class="ghost-btn" type="button">Sort</button>
-            <a href="{% url 'create_task' %}" class="primary-btn">+ New Task</a>
+        <div class="topbar-center">
+            <form method="get" class="topbar-actions">
+                <input
+                    type="text"
+                    name="q"
+                    class="search-box"
+                    placeholder="Search tasks..."
+                    value="{{ request.GET.q|default:'' }}"
+                >
+
+                <select name="status" class="select-dropdown">
+                    <option value="">Filter</option>
+                    <option value="Pending" {% if request.GET.status == "Pending" %}selected{% endif %}>Pending</option>
+                    <option value="In Progress" {% if request.GET.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                    <option value="Completed" {% if request.GET.status == "Completed" %}selected{% endif %}>Completed</option>
+                </select>
+
+                <select name="sort" class="select-dropdown">
+                    <option value="">Sort</option>
+                    <option value="newest" {% if request.GET.sort == "newest" %}selected{% endif %}>Newest</option>
+                    <option value="oldest" {% if request.GET.sort == "oldest" %}selected{% endif %}>Oldest</option>
+                    <option value="due_asc" {% if request.GET.sort == "due_asc" %}selected{% endif %}>Due Date ↑</option>
+                    <option value="due_desc" {% if request.GET.sort == "due_desc" %}selected{% endif %}>Due Date ↓</option>
+                </select>
+
+                <button class="ghost-btn" type="submit">Apply</button>
+                <a href="{% url 'dashboard' %}" class="ghost-btn reset-btn">Reset</a>
+                <a href="{% url 'create_task' %}" class="primary-btn">+ New Task</a>
+            </form>
         </div>
+
+        <div class="topbar-right">
+            <div class="notification-dropdown">
+                <button class="icon-btn notification-btn" type="button" id="notificationTrigger">
+                    <span class="icon-symbol">🔔</span>
+                    <span class="notif-badge">3</span>
+                </button>
+
+                <div class="notification-menu" id="notificationMenu">
+                    <div class="notification-header">Notifications</div>
+
+                    <div class="notification-item">
+                        <strong>Task reminder</strong>
+                        <p>Your task deadline is coming soon.</p>
+                    </div>
+
+                    <div class="notification-item">
+                        <strong>Subtask updated</strong>
+                        <p>A subtask was marked as completed.</p>
+                    </div>
+
+                    <div class="notification-item">
+                        <strong>New activity</strong>
+                        <p>You added a new task recently.</p>
+                    </div>
+                </div>
+            </div>
+
+           <div class="profile-dropdown">
+    <button class="profile-trigger profile-trigger-icon" type="button" id="profileTrigger">
+        <img
+            src="https://ui-avatars.com/api/?name={{ request.user.username|default:'User' }}&background=3b82f6&color=ffffff&size=128"
+            alt="Profile"
+            class="profile-avatar-img"
+        >
+    </button>
+
+    <div class="profile-menu" id="profileMenu">
+        <div class="profile-menu-top">
+            <img
+                src="https://ui-avatars.com/api/?name={{ request.user.username|default:'User' }}&background=3b82f6&color=ffffff&size=128"
+                alt="Profile"
+                class="profile-avatar-large-img"
+            >
+
+            <div class="profile-info">
+                <h3>
+                    {% if request.user.get_full_name %}
+                        {{ request.user.get_full_name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </h3>
+                <p>{{ request.user.email|default:"No email added" }}</p>
+                <a href="#" class="profile-view-btn">View Profile</a>
+            </div>
+        </div>
+
+        <div class="profile-menu-section">
+            <a href="#" class="profile-menu-item">My Profile</a>
+            <a href="#" class="profile-menu-item">Settings</a>
+            <a href="#" class="profile-menu-item">Inbox</a>
+        </div>
+
+        <div class="profile-menu-section logout-section">
+            <a href="#" class="profile-menu-item logout-item">Logout</a>
+        </div>
+    </div>
+</div>
     </header>
 
     <div class="dashboard-layout">
@@ -113,4 +208,49 @@
         </main>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const profileTrigger = document.getElementById("profileTrigger");
+    const profileMenu = document.getElementById("profileMenu");
+    const notificationTrigger = document.getElementById("notificationTrigger");
+    const notificationMenu = document.getElementById("notificationMenu");
+
+    if (profileTrigger && profileMenu) {
+        profileTrigger.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            profileMenu.classList.toggle("show");
+            if (notificationMenu) {
+                notificationMenu.classList.remove("show");
+            }
+        });
+    }
+
+    if (notificationTrigger && notificationMenu) {
+        notificationTrigger.addEventListener("click", function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            notificationMenu.classList.toggle("show");
+            if (profileMenu) {
+                profileMenu.classList.remove("show");
+            }
+        });
+    }
+
+    document.addEventListener("click", function (e) {
+        if (profileMenu && profileTrigger) {
+            if (!profileMenu.contains(e.target) && !profileTrigger.contains(e.target)) {
+                profileMenu.classList.remove("show");
+            }
+        }
+
+        if (notificationMenu && notificationTrigger) {
+            if (!notificationMenu.contains(e.target) && !notificationTrigger.contains(e.target)) {
+                notificationMenu.classList.remove("show");
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
