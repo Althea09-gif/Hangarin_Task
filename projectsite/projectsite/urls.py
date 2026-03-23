@@ -17,11 +17,37 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from Hangarin.views import dashboard, task_detail, create_task, edit_task, delete_task
+from django.contrib.auth.views import LoginView, LogoutView
+from Hangarin.views import (
+    dashboard,
+    task_detail,
+    create_task,
+    edit_task,
+    delete_task,
+    signup_view,
+    profile_view,
+    settings_view,
+)
+from Hangarin.forms import LoginForm
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
     path("", dashboard, name="dashboard"),
+    path("signup/", signup_view, name="signup"),
+    path(
+        "login/",
+        LoginView.as_view(
+            template_name="registration/login.html",
+            authentication_form=LoginForm
+        ),
+        name="login",
+    ),
+    path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
+
+    path("profile/", profile_view, name="profile"),
+    path("settings/", settings_view, name="settings"),
+
     path("tasks/new/", create_task, name="create_task"),
     path("tasks/<int:task_id>/", task_detail, name="task_detail"),
     path("tasks/<int:task_id>/edit/", edit_task, name="edit_task"),

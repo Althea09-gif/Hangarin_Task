@@ -124,5 +124,13 @@ function addNote() {
 function removeRow(button) {
     button.parentElement.remove();
 }
+document.addEventListener("DOMContentLoaded", function () {
+    flatpickr(".datetime-picker", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        time_24hr: false,
+        minuteIncrement: 1
+    });
+});
 </script>
 {% endblock %}

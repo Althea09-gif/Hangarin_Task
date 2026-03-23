@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-shell" style="max-width: 760px;">
+        <div class="form-header-card">
+            <div>
+                <h1 class="form-page-title">My Profile</h1>
+                <p class="form-page-subtitle">View your account information</p>
+            </div>
+        </div>
+
+        <div class="form-section-card">
+            <div class="detail-info-grid">
+                <div class="detail-info-box">
+                    <h4>Username</h4>
+                    <p>{{ request.user.username }}</p>
+                </div>
+
+                <div class="detail-info-box">
+                    <h4>Email</h4>
+                    <p>{{ request.user.email }}</p>
+                </div>
+
+                <div class="detail-info-box">
+                    <h4>First Name</h4>
+                    <p>{{ request.user.first_name|default:"Not set" }}</p>
+                </div>
+
+                <div class="detail-info-box">
+                    <h4>Last Name</h4>
+                    <p>{{ request.user.last_name|default:"Not set" }}</p>
+                </div>
+            </div>
+
+            <div class="form-actions" style="margin-top:20px;">
+                <a href="{% url 'settings' %}" class="primary-btn">Edit Profile</a>
+                <a href="{% url 'dashboard' %}" class="ghost-btn">Back to Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

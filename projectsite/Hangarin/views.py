@@ -1,15 +1,54 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from .models import Task, Category, Priority, Note, SubTask
-from .forms import TaskForm
+from .forms import TaskForm, SignUpForm, UserUpdateForm
 
 
+def signup_view(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect("dashboard")
+    else:
+        form = SignUpForm()
+
+    return render(request, "registration/signup.html", {"form": form})
+
+
+@login_required
+def profile_view(request):
+    return render(request, "profile.html")
+
+
+@login_required
+def settings_view(request):
+    if request.method == "POST":
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("profile")
+    else:
+        form = UserUpdateForm(instance=request.user)
+
+    return render(request, "settings.html", {"form": form})
+
+
+@login_required
 def dashboard(request):
     tasks = Task.objects.all()
 
     search_query = request.GET.get("q", "").strip()
     status_filter = request.GET.get("status", "").strip()
     sort_value = request.GET.get("sort", "").strip()
+    priority_filter = request.GET.get("priority", "").strip()
+    category_filter = request.GET.get("category", "").strip()
 
     if search_query:
         tasks = tasks.filter(
@@ -19,6 +58,12 @@ def dashboard(request):
 
     if status_filter:
         tasks = tasks.filter(status=status_filter)
+
+    if priority_filter:
+        tasks = tasks.filter(priority__name__iexact=priority_filter)
+
+    if category_filter:
+        tasks = tasks.filter(category__name__iexact=category_filter)
 
     if sort_value == "newest":
         tasks = tasks.order_by("-created_at")
@@ -70,6 +115,7 @@ def dashboard(request):
     return render(request, "dashboard.html", context)
 
 
+@login_required
 def task_detail(request, task_id):
     task = get_object_or_404(Task, id=task_id)
     notes = task.notes.all().order_by("-created_at")
@@ -88,6 +134,7 @@ def task_detail(request, task_id):
     return render(request, "task_detail.html", context)
 
 
+@login_required
 def create_task(request):
     if request.method == "POST":
         form = TaskForm(request.POST)
@@ -129,6 +176,7 @@ def create_task(request):
     return render(request, "create_task.html", context)
 
 
+@login_required
 def edit_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
 
@@ -165,7 +213,7 @@ def edit_task(request, task_id):
             return redirect("task_detail", task_id=task.id)
     else:
         initial_data = {
-            "deadline": task.deadline.strftime("%Y-%m-%dT%H:%M")
+            "deadline": task.deadline.strftime("%Y-%m-%d %H:%M")
         }
         form = TaskForm(instance=task, initial=initial_data)
 
@@ -181,6 +229,7 @@ def edit_task(request, task_id):
     return render(request, "edit_task.html", context)
 
 
+@login_required
 def delete_task(request, task_id):
     task = get_object_or_404(Task, id=task_id)
 

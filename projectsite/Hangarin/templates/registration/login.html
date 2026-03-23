@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-shell" style="max-width: 520px;">
+        <div class="form-header-card">
+            <div>
+                <h1 class="form-page-title">Sign In</h1>
+                <p class="form-page-subtitle">Access your Hangarin dashboard</p>
+            </div>
+        </div>
+
+        <form method="post" class="modern-form">
+            {% csrf_token %}
+
+            <div class="form-section-card">
+                <div class="field-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                </div>
+
+                <div class="field-group" style="margin-top: 16px;">
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    {{ form.password }}
+                </div>
+
+                {% if form.errors %}
+                    <p style="color:#ef4444; margin-top:16px;">Invalid username or password.</p>
+                {% endif %}
+
+                <div class="form-actions">
+                    <button type="submit" class="primary-btn">Login</button>
+                    <a href="{% url 'signup' %}" class="ghost-btn">Create Account</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
