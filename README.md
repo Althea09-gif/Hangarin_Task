@@ -157,6 +157,29 @@ You can deploy this project using:
 
 ---
 
+
+## 🔗 Accessing the Hangarin Web App
+
+When accessing the deployed Hangarin system via the PythonAnywhere link, users will be automatically redirected to the login page.
+
+### 📸 Login Page
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cd9a3822-3ac4-42eb-936f-7ad2e8f8569b" />
+
+
+A demo account is provided for testing purposes. You can use the credentials below to explore the system:
+
+
+User: 202280369@psu.palawan.edu.ph
+Pass: althea09
+
+---
+
+After successfully logging in, users will be redirected to the dashboard interface where they can interact with the system features.
+### 📸 Dashboard Interface
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/1277e1b5-4884-4c31-adba-0cb18fc8e169" />
+These screenshots represent the actual content and functionality inside the `hangarin_task` 
+
 ## 📌 License
 
 This project is for educational purposes.
+
