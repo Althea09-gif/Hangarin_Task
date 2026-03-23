@@ -20,7 +20,9 @@ SECRET_KEY = 'django-insecure-1j_=6^!=v6vxw=@zothf_ttg4^0=-9sy5ex$#15tnuwf56e^gg
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+DEBUG = False
+
+ALLOWED_HOSTS = ['Villa09.pythonanywhere.com', '127.0.0.1']
 
 
 INSTALLED_APPS = [
@@ -96,6 +98,7 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Auth redirects
 LOGIN_URL = 'login'
