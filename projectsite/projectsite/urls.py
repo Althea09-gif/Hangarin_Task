@@ -20,6 +20,7 @@ from django.urls import path
 from django.contrib.auth.views import LoginView, LogoutView
 from Hangarin.views import (
     dashboard,
+    home,
     task_detail,
     create_task,
     edit_task,
@@ -33,16 +34,18 @@ from Hangarin.forms import LoginForm
 urlpatterns = [
     path("admin/", admin.site.urls),
 
-    path("", dashboard, name="dashboard"),
+    path("", home, name="home"),
+    path("dashboard/", dashboard, name="dashboard"),
     path("signup/", signup_view, name="signup"),
     path(
-        "login/",
-        LoginView.as_view(
-            template_name="registration/login.html",
-            authentication_form=LoginForm
-        ),
-        name="login",
+    "login/",
+    LoginView.as_view(
+        template_name="registration/login.html",
+        authentication_form=LoginForm,
+        redirect_authenticated_user=True
     ),
+    name="login",
+),
     path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
 
     path("profile/", profile_view, name="profile"),

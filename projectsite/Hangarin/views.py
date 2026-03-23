@@ -4,6 +4,12 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import Task, Category, Priority, Note, SubTask
 from .forms import TaskForm, SignUpForm, UserUpdateForm
+from django.shortcuts import redirect
+
+def home(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+    return redirect('login')
 
 
 def signup_view(request):
