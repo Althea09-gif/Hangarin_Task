@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth.views import LoginView, LogoutView
 from Hangarin.views import (
     dashboard,
@@ -34,23 +34,29 @@ from Hangarin.forms import LoginForm
 urlpatterns = [
     path("admin/", admin.site.urls),
 
+    # PWA routes
+    path("", include("pwa.urls")),
+
+    # Main pages
     path("", home, name="home"),
     path("dashboard/", dashboard, name="dashboard"),
     path("signup/", signup_view, name="signup"),
     path(
-    "login/",
-    LoginView.as_view(
-        template_name="registration/login.html",
-        authentication_form=LoginForm,
-        redirect_authenticated_user=True
+        "login/",
+        LoginView.as_view(
+            template_name="registration/login.html",
+            authentication_form=LoginForm,
+            redirect_authenticated_user=True,
+        ),
+        name="login",
     ),
-    name="login",
-),
     path("logout/", LogoutView.as_view(next_page="login"), name="logout"),
 
+    # User pages
     path("profile/", profile_view, name="profile"),
     path("settings/", settings_view, name="settings"),
 
+    # Task pages
     path("tasks/new/", create_task, name="create_task"),
     path("tasks/<int:task_id>/", task_detail, name="task_detail"),
     path("tasks/<int:task_id>/edit/", edit_task, name="edit_task"),

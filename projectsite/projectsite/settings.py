@@ -14,15 +14,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 SECRET_KEY = 'django-insecure-1j_=6^!=v6vxw=@zothf_ttg4^0=-9sy5ex$#15tnuwf56e^gg'
 
+DEBUG = True
 
-DEBUG = False
-
-
-ALLOWED_HOSTS = ['Villa09.pythonanywhere.com', '127.0.0.1']
-
+ALLOWED_HOSTS = ['Villa09.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -32,6 +28,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'Hangarin',
+    'pwa',
 ]
 
 MIDDLEWARE = [
@@ -89,15 +86,54 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
 USE_TZ = True
 
 # Static files
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Progressive Web App settings
+PWA_APP_NAME = 'Hangarin'
+PWA_APP_DESCRIPTION = "Hangarin task and to-do manager"
+PWA_APP_THEME_COLOR = '#0f172a'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'portrait'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+
+PWA_APP_ICONS = [
+    {
+        'src': '/static/img/icon-192.png',
+        'sizes': '192x192'
+    },
+    {
+        'src': '/static/img/icon-512.png',
+        'sizes': '512x512'
+    }
+]
+
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/img/icon-192.png',
+        'sizes': '192x192'
+    },
+    {
+        'src': '/static/img/icon-512.png',
+        'sizes': '512x512'
+    }
+]
+
+PWA_APP_DIR = 'ltr'
+PWA_SERVICE_WORKER_PATH = BASE_DIR / 'static' / 'js' / 'serviceworker.js'
 
 # Auth redirects
 LOGIN_URL = 'login'
