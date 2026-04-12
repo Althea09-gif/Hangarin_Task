@@ -1,19 +1,10 @@
-self.addEventListener('install', function(e) {
-  e.waitUntil(
-    caches.open('hangarin-cache-v1').then(function(cache) {
-      return cache.addAll([
-        '/',
-        '/login/',
-        '/dashboard/',
-      ]);
-    })
-  );
-});
+self.addEventListener('fetch', function(event) {
+    // Only cache GET requests
+    if (event.request.method !== 'GET') return;
 
-self.addEventListener('fetch', function(e) {
-  e.respondWith(
-    caches.match(e.request).then(function(response) {
-      return response || fetch(e.request);
-    })
-  );
+    event.respondWith(
+        fetch(event.request).catch(() => {
+            return caches.match(event.request);
+        })
+    );
 });
